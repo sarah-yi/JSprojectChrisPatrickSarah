@@ -23,7 +23,7 @@ function startGame() {
   showCards();
   themeSong.play();
 }
-startBtn.addEventListener("click", startGame);
+// startBtn.addEventListener("click", startGame);
 
 function flipCard() {
   if (lockCards) return;
@@ -36,52 +36,52 @@ function flipCard() {
     firstCard = this;
   } else {
     // second click
-    hasFlippedCard = false; 
+    hasFlippedCard = false;
     secondCard = this;
-  
-  checkForMatch(); 
+
+    checkForMatch();
   }
 }
 
 function showCards() {
   cards.forEach(card => {
     card.classList.add('flip');
-   setTimeout(() => {
+    setTimeout(() => {
       lockCards = false;
       card.classList.remove('flip');
       resetCards();
-  }, 2000);
+    }, 2000);
   })
-  
+
 }
 
 function checkForMatch() {
-  
+  lockCards = true;
   if ((firstCard && secondCard) && firstCard.dataset.framework === secondCard.dataset.framework) {
     if (firstCard.dataset.framework === 'queen-beryl' && matchNumber < 5) {
       lose();
-    lockCards = true;
-    return;
+      lockCards = true;
+      return;
     }
     chosenCards.push(firstCard.dataset.framework)
     window.setTimeout(disableCards, 1000);
-  }  else {
+  } else {
     unflipCards();
-  }  
-  }  
+  }
+}
 
 function disableCards() {
-    firstCard.removeEventListener('click', flipCard);
-    secondCard.removeEventListener('click', flipCard);
-    firstCard.classList.add('invis');
-    secondCard.classList.add('invis');
-    resetCards();
-    matchNumber++;
+  firstCard.removeEventListener('click', flipCard);
+  secondCard.removeEventListener('click', flipCard);
+  firstCard.classList.add('invis');
+  secondCard.classList.add('invis');
+  resetCards();
+  matchNumber++;
 }
 
 function unflipCards() {
   lockCards = true;
-    setTimeout(() => {
+  setTimeout(() => {
     firstCard.classList.remove('flip');
     secondCard.classList.remove('flip');
     resetCards();
@@ -89,14 +89,14 @@ function unflipCards() {
 }
 
 function resetCards() {
-[hasFlippedCard, lockCards] = [false, false];
-[firstCard, secondCard] = [null, null];
+  [hasFlippedCard, lockCards] = [false, false];
+  [firstCard, secondCard] = [null, null];
 }
 
 function shuffle() {
   cards.forEach(card => {
-  let shuffleCards = Math.floor(Math.random() * 12);
-  card.style.order = shuffleCards;
+    let shuffleCards = Math.floor(Math.random() * 12);
+    card.style.order = shuffleCards;
   });
 };
 
@@ -104,24 +104,24 @@ cards.forEach(card => card.addEventListener('click', flipCard));
 
 let matched = document.getElementsByClassName('invis');
 
-function resetGame() {           
-  let matchNumber = 0;
+  function resetGame() {
+  matchNumber = 0;
   document.querySelectorAll(`.flip`).forEach(flippedCard => {
     flippedCard.classList.remove('flip');
   });
 
   chosenCards.forEach(chosenName => {
     document.querySelectorAll(`[data-framework=${chosenName}]`).forEach(selectedCard => {
-		  selectedCard.classList.remove('invis');
+      selectedCard.classList.remove('invis');
       selectedCard.addEventListener('click', flipCard)
-      });
     });
-       
+  });
+
   themeSong.load();
   themeSong.play();
 
-    
-      // timeout set because of the transition lag
+
+  // timeout set because of the transition lag
   setTimeout(() => {
     shuffle();
     showCards();
@@ -129,10 +129,10 @@ function resetGame() {
     timer();
   }, 400);
 
-     
+
 };
 
-resetBtn.addEventListener('click', resetGame);
+
 
 const loseGame = document.querySelector('.lose-over');
 const winGame = document.querySelector('.win-over');
@@ -144,7 +144,6 @@ const scoreAlert = document.querySelector('.score');
 
 
 function lose() {
-
   loseGame.style.display = 'flex';
   loseGif.style.display = 'flex';
   loseAlert.innerText = "You Lose!";
@@ -160,8 +159,8 @@ function lose() {
     evilLaugh.pause();
     themeSong.load();
     themeSong.play();
-    });
-  }
+  });
+}
 
 function win() {
   winGame.style.display = 'flex';
@@ -188,31 +187,32 @@ function timer() {
   let counter = 60;
   clearInterval(timerInterval)
   timerInterval = setInterval(() => {
-      counter--;
+    counter--;
     if (counter < 0) {
       clearInterval(timerInterval);
       lockCards = true;
       lose();
       return;
-    } else  {
+    } else {
       time.innerText = counter;
     }
 
-    if (matchNumber === 6){
+    if (matchNumber === 6) {
       clearInterval(timerInterval);
       if (highScore === 0 || counter > highScore) {
         highScore = counter;
-      } 
+      }
       lockCards = true;
       win();
-      matchNumber = 0;
+      // let matchNumber = 0;
       return;
-    } 
+    }
 
   }, 1000);
 }
 
-startBtn.addEventListener('click', startGame); 
+startBtn.addEventListener('click', startGame);
+resetBtn.addEventListener('click', resetGame);
 
 function homeScreen() {
   window.location.reload();
